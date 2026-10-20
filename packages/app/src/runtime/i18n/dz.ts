@@ -790,9 +790,9 @@ export const dict = {
   "server.connect.address.invalid": "ནུས་ཅན་ HTTP ཡང་ན་ HTTPS སར་བར་ཁ་བྱང་ཅིག་བཙུགས།",
   "server.connect.failed": "མཐུད་མ་ཚུགས། སར་བར་ཁ་བྱང་དང་ཆོག་ཡིག་ཞིབ་དཔྱད་འབད་ཞིནམ་ལས་ ལོག་སྟེ་འབད་རྩོལ་བསྐྱེད།",
   "server.connect.scan": "QR གསང་གྲངས་པར་བཤུས་",
-  "server.connect.scan.description": "ཁྱོད་རའི་པར་ཆས་འདི་ opencode pair གིས་སྟོན་མི་ QR གསང་ཡིག་ལུ་སྟོན་དགོ།",
+  "server.connect.scan.description": "ཁྱོད་རའི་པར་ཆས་འདི་ hips pair གིས་སྟོན་མི་ QR གསང་ཡིག་ལུ་སྟོན་དགོ།",
   "server.connect.scan.invalid":
-    "འདི་ HIPS Code ཆ་སྒྲིག་ཨང་རྟགས་ཅིག་མེན། opencode pair གིས་སྟོན་ཡོད་པའི་ཨང་རྟགས་འདི་པར་བཤུས་འབད།",
+    "འདི་ HIPS Code ཆ་སྒྲིག་ཨང་རྟགས་ཅིག་མེན། hips pair གིས་སྟོན་ཡོད་པའི་ཨང་རྟགས་འདི་པར་བཤུས་འབད།",
   "server.connect.camera": "པར་ཆས་ཆ་སྒྲིག་འབད་དོ།",
   "server.connect.camera.starting": "པར་ཆས་ཁ་ཕྱེ་དོ...",
   "server.connect.mixedContent":

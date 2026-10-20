@@ -854,8 +854,8 @@ export const dict = {
   "server.connect.address.invalid": "Unesite ispravnu HTTP ili HTTPS adresu servera.",
   "server.connect.failed": "Povezivanje nije uspjelo. Provjerite adresu servera i lozinku, pa pokušajte ponovo.",
   "server.connect.scan": "Skeniraj QR kod",
-  "server.connect.scan.description": "Usmjerite kameru prema QR kodu koji prikazuje opencode pair.",
-  "server.connect.scan.invalid": "Ovo nije HIPS Code kod za uparivanje. Skenirajte kod koji prikazuje opencode pair.",
+  "server.connect.scan.description": "Usmjerite kameru prema QR kodu koji prikazuje hips pair.",
+  "server.connect.scan.invalid": "Ovo nije HIPS Code kod za uparivanje. Skenirajte kod koji prikazuje hips pair.",
   "server.connect.camera": "Kamera za uparivanje",
   "server.connect.camera.starting": "Otvaranje kamere…",
   "server.connect.mixedContent":

@@ -797,8 +797,8 @@ export const dict = {
   "server.connect.address.invalid": "Zadejte platnou adresu serveru HTTP nebo HTTPS.",
   "server.connect.failed": "Připojení se nezdařilo. Zkontrolujte adresu serveru a heslo a zkuste to znovu.",
   "server.connect.scan": "Naskenovat QR kód",
-  "server.connect.scan.description": "Namiřte kameru na QR kód zobrazený příkazem opencode pair.",
-  "server.connect.scan.invalid": "Toto není párovací kód HIPS Code. Naskenujte kód zobrazený příkazem opencode pair.",
+  "server.connect.scan.description": "Namiřte kameru na QR kód zobrazený příkazem hips pair.",
+  "server.connect.scan.invalid": "Toto není párovací kód HIPS Code. Naskenujte kód zobrazený příkazem hips pair.",
   "server.connect.camera": "Kamera pro párování",
   "server.connect.camera.starting": "Otevírání kamery…",
   "server.connect.mixedContent":

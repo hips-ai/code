@@ -784,8 +784,8 @@ export const dict = {
   "server.connect.address.invalid": "Dogry HTTP ýa-da HTTPS serwer salgysyny giriziň.",
   "server.connect.failed": "Birikip bilmedim Serweriň salgysyny we parolyny barlaň, soňra gaýtadan synanyşyň.",
   "server.connect.scan": "QR koduny skanirläň",
-  "server.connect.scan.description": "Kamerany opencode pair görkezýän QR koda gönükdiriň.",
-  "server.connect.scan.invalid": "Bu HIPS Code jübütleme kody däl. opencode pair görkezýän kody skanirläň.",
+  "server.connect.scan.description": "Kamerany hips pair görkezýän QR koda gönükdiriň.",
+  "server.connect.scan.invalid": "Bu HIPS Code jübütleme kody däl. hips pair görkezýän kody skanirläň.",
   "server.connect.camera": "Jübüt kamera",
   "server.connect.camera.starting": "Kamerany açmak…",
   "server.connect.mixedContent":

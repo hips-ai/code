@@ -782,8 +782,8 @@ export const dict = {
   "server.connect.address.invalid": "Introduceți o adresă validă de server HTTP sau HTTPS.",
   "server.connect.failed": "Nu s-a putut conecta. Verificați adresa serverului și parola, apoi încercați din nou.",
   "server.connect.scan": "Scanează codul QR",
-  "server.connect.scan.description": "Îndreptați camera către codul QR afișat de opencode pair.",
-  "server.connect.scan.invalid": "Acesta nu este un cod de asociere HIPS Code. Scanați codul afișat de opencode pair.",
+  "server.connect.scan.description": "Îndreptați camera către codul QR afișat de hips pair.",
+  "server.connect.scan.invalid": "Acesta nu este un cod de asociere HIPS Code. Scanați codul afișat de hips pair.",
   "server.connect.camera": "Împerecherea camerei",
   "server.connect.camera.starting": "Deschiderea camerei…",
   "server.connect.mixedContent":

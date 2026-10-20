@@ -288,7 +288,7 @@ const make = Effect.gen(function* () {
           title: input.title,
           detail,
           command: input.command.join(" "),
-          retry: input.retry ?? "Fix the issue above, then run opencode upgrade again.",
+          retry: input.retry ?? "Fix the issue above, then run hips upgrade again.",
         },
         cause === undefined ? undefined : { cause },
       )
@@ -337,7 +337,7 @@ const make = Effect.gen(function* () {
               {
                 title: "Could not prepare the HIPS Code upgrade",
                 detail: errorDetail(cause),
-                retry: "Fix the issue above, then run opencode upgrade again.",
+                retry: "Fix the issue above, then run hips upgrade again.",
               },
               { cause },
             ),

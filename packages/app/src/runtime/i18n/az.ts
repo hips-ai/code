@@ -792,9 +792,9 @@ export const dict = {
   "server.connect.address.invalid": "Etibarlı HTTP və ya HTTPS server ünvanını daxil edin.",
   "server.connect.failed": "Bağlana bilmədik. Server ünvanını və şifrəni yoxlayın, sonra yenidən cəhd edin.",
   "server.connect.scan": "QR kodu skan edin",
-  "server.connect.scan.description": "Kameranızı opencode pair tərəfindən göstərilən QR koda yönəldin.",
+  "server.connect.scan.description": "Kameranızı hips pair tərəfindən göstərilən QR koda yönəldin.",
   "server.connect.scan.invalid":
-    "Bu, HIPS Code qoşulma kodu deyil. opencode pair tərəfindən göstərilən kodu skan edin.",
+    "Bu, HIPS Code qoşulma kodu deyil. hips pair tərəfindən göstərilən kodu skan edin.",
   "server.connect.camera": "Kamera cütləşdirilir",
   "server.connect.camera.starting": "Kamera açılır…",
   "server.connect.mixedContent":

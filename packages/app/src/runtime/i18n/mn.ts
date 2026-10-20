@@ -790,8 +790,8 @@ export const dict = {
   "server.connect.address.invalid": "Хүчинтэй HTTP эсвэл HTTPS серверийн хаягийг оруулна уу.",
   "server.connect.failed": "Холбогдож чадсангүй. Серверийн хаяг ба нууц үгийг шалгаад дахин оролдоно уу.",
   "server.connect.scan": "QR кодыг сканнердах",
-  "server.connect.scan.description": "Камераа opencode pair-ийн харуулсан QR код руу чиглүүлнэ үү.",
-  "server.connect.scan.invalid": "Энэ HIPS Code холболтын код биш. opencode pair-ийн харуулсан кодыг уншуулна уу.",
+  "server.connect.scan.description": "Камераа hips pair-ийн харуулсан QR код руу чиглүүлнэ үү.",
+  "server.connect.scan.invalid": "Энэ HIPS Code холболтын код биш. hips pair-ийн харуулсан кодыг уншуулна уу.",
   "server.connect.camera": "Камер холбох",
   "server.connect.camera.starting": "Камер нээж байна…",
   "server.connect.mixedContent":

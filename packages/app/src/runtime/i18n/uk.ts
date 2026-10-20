@@ -876,8 +876,8 @@ export const dict = {
   "server.connect.address.invalid": "Введіть дійсну адресу сервера HTTP або HTTPS.",
   "server.connect.failed": "Не вдалося підключитися. Перевірте адресу сервера та пароль, потім повторіть спробу.",
   "server.connect.scan": "Сканувати QR-код",
-  "server.connect.scan.description": "Наведіть камеру на QR-код, показаний opencode pair.",
-  "server.connect.scan.invalid": "Це не код підключення HIPS Code. Відскануйте код, показаний opencode pair.",
+  "server.connect.scan.description": "Наведіть камеру на QR-код, показаний hips pair.",
+  "server.connect.scan.invalid": "Це не код підключення HIPS Code. Відскануйте код, показаний hips pair.",
   "server.connect.camera": "Камера для сполучення",
   "server.connect.camera.starting": "Відкриваємо камеру…",
   "server.connect.mixedContent":

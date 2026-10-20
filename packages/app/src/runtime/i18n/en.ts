@@ -360,10 +360,10 @@ export const dict = {
   "server.connect.link": "Pairing link",
   "server.connect.link.placeholder": "http://192.168.1.2:4096/auth/connect/…",
   "server.connect.link.invalid":
-    "Paste the full pairing link from opencode pair, or from Settings → Pairing on the server's computer.",
+    "Paste the full pairing link from hips pair, or from Settings → Pairing on the server's computer.",
   "server.connect.password.prompt": "No pairing link?",
   "server.connect.password.use": "Use password",
-  "server.connect.password.hint": "To see it, run opencode service get password on the server's computer.",
+  "server.connect.password.hint": "To see it, run hips service get password on the server's computer.",
   "server.connect.link.prompt": "Have a pairing link?",
   "server.connect.link.use": "Use pairing link",
   "server.connect.button": "Connect",
@@ -371,14 +371,14 @@ export const dict = {
   "server.connect.failed": "Could not connect. Check the server address and password, then try again.",
   "server.connect.pair.link": "Run this command on the server's computer to get a pairing link and QR code.",
   "server.connect.scan": "Scan QR code",
-  "server.connect.scan.description": "Point your camera at the QR code shown by opencode pair.",
-  "server.connect.scan.invalid": "This is not a HIPS Code pairing code. Scan the code shown by opencode pair.",
+  "server.connect.scan.description": "Point your camera at the QR code shown by hips pair.",
+  "server.connect.scan.invalid": "This is not a HIPS Code pairing code. Scan the code shown by hips pair.",
   "server.connect.scan.failed": "This browser could not read the QR code. Enter your connection details manually.",
-  "server.connect.link.expired": "This pairing link expired or was already used. Run opencode pair to get a new one.",
+  "server.connect.link.expired": "This pairing link expired or was already used. Run hips pair to get a new one.",
   "server.connect.link.unreachable":
     "Could not reach {{url}}. Check that this device can reach the server, then try again.",
   "server.connect.link.legacy":
-    "This pairing code is from an older version of HIPS Code. Update HIPS Code on the server, then run opencode pair again.",
+    "This pairing code is from an older version of HIPS Code. Update HIPS Code on the server, then run hips pair again.",
   "server.connect.camera": "Pairing camera",
   "server.connect.camera.starting": "Opening camera…",
   "server.connect.mixedContent":

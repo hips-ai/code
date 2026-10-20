@@ -246,7 +246,7 @@ describe("mini command", () => {
       const result = await cli(args)
 
       expect(result.exitCode).toBe(1)
-      expect(result.stderr).toContain("opencode mini requires a TTY stdout")
+      expect(result.stderr).toContain("hips mini requires a TTY stdout")
     }
   })
 })

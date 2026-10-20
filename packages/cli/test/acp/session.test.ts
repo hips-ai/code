@@ -27,7 +27,7 @@ describe("acp session lifecycle over the wire", () => {
       agentInfo: { name: "HIPS Code" },
     })
     expect(plain.authMethods).toEqual([
-      { id: "opencode-login", name: "Login with HIPS Code", description: "Run `opencode auth login` in the terminal" },
+      { id: "opencode-login", name: "Login with HIPS Code", description: "Run `hips auth login` in the terminal" },
     ])
     expect(terminal.authMethods?.[0]?._meta).toEqual({
       "terminal-auth": { command: "opencode", args: ["auth", "login"], label: "HIPS Code Login" },
@@ -36,7 +36,7 @@ describe("acp session lifecycle over the wire", () => {
       {
         id: "opencode-login",
         name: "Login with HIPS Code",
-        description: "Run `opencode auth login` in the terminal",
+        description: "Run `hips auth login` in the terminal",
         type: "terminal",
         args: ["--login"],
       },
