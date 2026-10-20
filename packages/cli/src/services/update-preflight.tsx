@@ -6,7 +6,7 @@ import { render, useTerminalDimensions } from "@opentui/solid"
 import { OPENCODE_VERSION } from "../version"
 import "@opencode/tui/component/spinner-renderable"
 import { SPINNER_FRAMES } from "@opencode/tui/component/spinner"
-import { go } from "@opencode/tui/logo"
+import { logo } from "@opencode/tui/logo"
 import { setTimeout } from "node:timers/promises"
 import {
   batch,
@@ -22,7 +22,7 @@ import {
   untrack,
 } from "solid-js"
 
-const stages = ["Keeping your session safe", "Starting the new background service", "Loading OpenCode"] as const
+const stages = ["Keeping your session safe", "Starting the new background service", "Loading HIPS Code"] as const
 const stageFloor = 480
 const transitionDuration = 420
 const completionHold = 650
@@ -187,7 +187,13 @@ const colors = {
   text: RGBA.fromHex("#eeeeee"),
 }
 
-const monogram = go.right.slice(1)
+const brand = {
+  mark: RGBA.fromHex("#0089DD"),
+  markShade: RGBA.fromHex("#005F9E"),
+  markAccent: RGBA.fromHex("#81BD41"),
+}
+const monogram = logo.left
+const monogramWidth = Math.max(...monogram.map((line) => line.length))
 const sweepBlend = 8
 const textDim = RGBA.fromHex("#4c4c4c")
 const rampSteps = 32
@@ -201,7 +207,7 @@ const blend = (from: RGBA, to: RGBA, amount: number) =>
 const ramp = (from: RGBA, to: RGBA) =>
   Array.from({ length: rampSteps + 1 }, (_, step) => blend(from, to, step / rampSteps))
 const railRamp = ramp(colors.accentDim, colors.accentBright)
-const monogramRamp = ramp(colors.muted, colors.accent)
+const monogramRamp = ramp(brand.markShade, brand.mark)
 const rampCache = new Map<RGBA, ReadonlyArray<RGBA>>()
 const rampFor = (color: RGBA) => {
   const cached = rampCache.get(color)
@@ -233,17 +239,41 @@ function Monogram(props: { ink: () => RGBA }) {
         {(line) => (
           <box flexDirection="row">
             <For each={Array.from(line)}>
-              {(char) =>
-                char === "_" ? (
-                  <text bg={shadow()} selectable={false}>
-                    {" "}
-                  </text>
-                ) : (
+              {(char) => {
+                if (char === "_") {
+                  return (
+                    <text bg={shadow()} selectable={false}>
+                      {" "}
+                    </text>
+                  )
+                }
+                if (char === "^") {
+                  return (
+                    <text fg={props.ink()} bg={shadow()} selectable={false}>
+                      ▀
+                    </text>
+                  )
+                }
+                if (char === "~") {
+                  return (
+                    <text fg={shadow()} selectable={false}>
+                      ▀
+                    </text>
+                  )
+                }
+                if (char === "*") {
+                  return (
+                    <text fg={brand.markAccent} selectable={false}>
+                      ▀
+                    </text>
+                  )
+                }
+                return (
                   <text fg={props.ink()} selectable={false}>
                     {char}
                   </text>
                 )
-              }
+              }}
             </For>
           </box>
         )}
@@ -321,13 +351,15 @@ function UpdateFooter(props: {
   onOutcomeSettled: () => void
 }) {
   const term = useTerminalDimensions()
+  // The wordmark only sits beside the status when the status text keeps room for its longest stage.
+  const showMonogram = () => term().width >= monogramWidth + 44
   const [position, setPosition] = createSignal(0)
   const [pulse, setPulse] = createSignal(0)
   const headerFade = createFade()
   const statusSweep = createSweep()
   const runningHeader = () =>
     phrase(
-      ["OpenCode", colors.muted, true],
+      ["HIPS Code", colors.muted, true],
       ["is updating", colors.muted],
       ...(props.from
         ? ([
@@ -339,11 +371,11 @@ function UpdateFooter(props: {
       [OPENCODE_VERSION, colors.accent],
     )
   const completedHeader = phrase(
-    ["OpenCode", colors.muted, true],
+    ["HIPS Code", colors.muted, true],
     ["updated to", colors.muted],
     [OPENCODE_VERSION, colors.accent],
   )
-  const pausedHeader = phrase(["OpenCode", colors.muted, true], ["update paused", colors.muted])
+  const pausedHeader = phrase(["HIPS Code", colors.muted, true], ["update paused", colors.muted])
   const outcomeStatus = () =>
     props.outcome() === "success"
       ? [...styled("✓", colors.success), ...styled(" Ready", colors.text)]
@@ -380,10 +412,10 @@ function UpdateFooter(props: {
           : runningHeader()),
   )
   const monogramInk = createMemo(() =>
-    props.outcome() === "success" ? shade(monogramRamp, smoothstep(headerFade.progress())) : colors.muted,
+    props.outcome() === "success" ? shade(monogramRamp, smoothstep(headerFade.progress())) : brand.markShade,
   )
   const rail = createMemo(() => {
-    const width = Math.max(0, Math.min(30, term().width - 39))
+    const width = Math.max(0, Math.min(30, term().width - 34 - (showMonogram() ? monogramWidth + 1 : 0)))
     if (width === 0) return []
     const filled = Math.round(position() * width)
     const glowRadius = 6
@@ -428,7 +460,9 @@ function UpdateFooter(props: {
 
   return (
     <box width="100%" height={4} flexDirection="row" gap={1} paddingLeft={1} live={props.animating()}>
-      <Monogram ink={monogramInk} />
+      <Show when={showMonogram()}>
+        <Monogram ink={monogramInk} />
+      </Show>
       <box flexDirection="column" flexGrow={1} overflow="hidden">
         <CellLine cells={header()} />
         <Show

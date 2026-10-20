@@ -2,7 +2,7 @@ import { expect, test } from "bun:test"
 import { mkdir, writeFile } from "node:fs/promises"
 import path from "node:path"
 import type { TerminalColors } from "@opentui/core"
-import { allThemes, hasTheme, getOpenCodeTheme, parseTheme, resolveTheme } from "../src/theme"
+import { allThemes, hasTheme, getHipsTheme, getOpenCodeTheme, parseTheme, resolveTheme } from "../src/theme"
 import { discoverThemes } from "../src/theme/discovery"
 import { configDirectories } from "../src/util/config-directories"
 import { terminalMode } from "../src/theme/system"
@@ -20,6 +20,12 @@ test("rejects unrecognized theme structures", () => {
 test("registers opencode as a native V2 theme", () => {
   expect(allThemes().opencode).toBe(getOpenCodeTheme())
   expect(parseTheme(getOpenCodeTheme()).base).toBeDefined()
+})
+
+test("registers hips as a native V2 theme with both modes", () => {
+  expect(allThemes().hips).toBe(getHipsTheme())
+  expect(getHipsTheme().light).toBeDefined()
+  expect(getHipsTheme().dark).toBeDefined()
 })
 
 test("keeps the experimental opencode2 theme out of the global theme list", () => {

@@ -190,6 +190,17 @@ const DiffDefinition = Schema.Struct({
 })
 export type DiffDefinition = Schema.Schema.Type<typeof DiffDefinition>
 
+// The product mark keeps its own colors in every theme; omitted roles resolve to the per-mode brand defaults.
+export const BrandToken = Schema.Literals(["mark", "markShade", "markAccent", "markEyes"])
+export type BrandToken = Schema.Schema.Type<typeof BrandToken>
+const BrandDefinition = Schema.Struct({
+  mark: Schema.optional(ColorValue),
+  markShade: Schema.optional(ColorValue),
+  markAccent: Schema.optional(ColorValue),
+  markEyes: Schema.optional(ColorValue),
+})
+export type BrandDefinition = Schema.Schema.Type<typeof BrandDefinition>
+
 const ThemeTokensDefinition = Schema.Struct({
   text: Schema.optional(TextDefinition),
   background: Schema.optional(BackgroundDefinition),
@@ -198,6 +209,7 @@ const ThemeTokensDefinition = Schema.Struct({
   diff: Schema.optional(DiffDefinition),
   syntax: Schema.optional(SyntaxDefinition),
   markdown: Schema.optional(MarkdownDefinition),
+  brand: Schema.optional(BrandDefinition),
 })
 export type ThemeTokensDefinition = Schema.Schema.Type<typeof ThemeTokensDefinition>
 
@@ -258,6 +270,7 @@ const CompleteThemeTokensDefinition = Schema.Struct({
   }),
   syntax: Schema.Record(SyntaxToken, HueColorValue),
   markdown: Schema.Record(MarkdownToken, HueColorValue),
+  brand: Schema.optional(BrandDefinition),
 })
 
 const ThemeDefinitionFields = Schema.Struct({

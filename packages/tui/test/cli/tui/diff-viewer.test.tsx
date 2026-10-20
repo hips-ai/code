@@ -1969,6 +1969,7 @@ async function renderDiffViewer(
     diffResponse?: (url: URL) => Promise<Response>
     branchesResponse?: (url: URL) => Promise<Response>
     state?: string
+    theme?: string
   } = {},
 ) {
   const commands = new Map<string, KeymapCommand>()
@@ -1983,7 +1984,11 @@ async function renderDiffViewer(
   let imageReadInput: unknown
   let shortcut: (command: string) => string | undefined = () => undefined
   const stored: { info: Info } = {
-    info: { keybinds: options.keybinds, diffs: { source: options.source, single: options.single } },
+    info: {
+      theme: options.theme ? { name: options.theme } : undefined,
+      keybinds: options.keybinds,
+      diffs: { source: options.source, single: options.single },
+    },
   }
   const writes: Info[] = []
   const baseRequests: URL[] = []
@@ -2330,7 +2335,8 @@ test("highlights virtual chunks with whole-file syntax context", async () => {
         patch: `--- /dev/null\n+++ b/big.ts\n@@ -0,0 +1,${additions.length} @@\n${additions.join("\n")}`,
       },
     ],
-    { width: 120, height: 40 },
+    // The comparison below needs a theme whose variable color differs from plain text.
+    { width: 120, height: 40, theme: "opencode" },
   )
   const color = (text: string) =>
     viewer.app

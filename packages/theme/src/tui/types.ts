@@ -2,6 +2,7 @@ import type { RGBA } from "@opentui/core"
 import type {
   ActionState,
   ActionVariant,
+  BrandToken,
   FeedbackKind,
   HueStep,
   MarkdownToken,
@@ -65,6 +66,7 @@ export type ResolvedThemeTokens = {
   }
   readonly syntax: Readonly<Record<SyntaxToken, RGBA>>
   readonly markdown: Readonly<Record<MarkdownToken, RGBA>>
+  readonly brand: Readonly<Record<BrandToken, RGBA>>
 }
 
 export type ResolvedTheme = ResolvedThemeTokens & {

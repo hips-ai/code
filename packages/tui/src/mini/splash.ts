@@ -15,7 +15,7 @@ import {
 } from "@opentui/core"
 import { Locale } from "../util/locale"
 import { stringWidth } from "../util/string-width"
-import { go } from "../logo"
+import { logo } from "../logo"
 import { monoTruncate } from "./mono"
 import type { RunSplashTheme } from "./theme"
 
@@ -40,7 +40,7 @@ export type SplashMeta = {
 
 type Cell = {
   char: string
-  mark: "text" | "full" | "mix" | "top"
+  mark: "text" | "full" | "mix" | "top" | "accent"
 }
 
 function cells(line: string): Cell[] {
@@ -58,6 +58,11 @@ function cells(line: string): Cell[] {
 
     if (char === "~") {
       list.push({ char: "▀", mark: "top" })
+      continue
+    }
+
+    if (char === "*") {
+      list.push({ char: "▀", mark: "accent" })
       continue
     }
 
@@ -147,6 +152,7 @@ function draw(
     top: number
     fg: ColorInput
     shadow: ColorInput
+    accent: ColorInput
     attrs?: number
   },
 ) {
@@ -164,6 +170,12 @@ function draw(
       continue
     }
 
+    if (cell.mark === "accent") {
+      push(lines, x, input.top, cell.char, input.accent, undefined, input.attrs)
+      x += 1
+      continue
+    }
+
     push(lines, x, input.top, cell.char, input.fg, undefined, input.attrs)
     x += 1
   }
@@ -175,8 +187,7 @@ function buildExit(input: SplashWriterInput, ctx: ScrollbackRenderContext): Scro
   const lines: Array<{ left: number; top: number; text: string; fg: ColorInput; bg?: ColorInput; attrs?: number }> = []
   const left = input.theme.left
   const right = input.theme.right
-  const leftShadow = input.theme.leftShadow
-  const mark = input.mono ? ["[O]"] : go.right.slice(1)
+  const mark = input.mono ? ["[H]"] : logo.left
   const top = 1
   const body_left = (mark[0]?.length ?? 0) + 2
   const session = "Session  "
@@ -190,8 +201,9 @@ function buildExit(input: SplashWriterInput, ctx: ScrollbackRenderContext): Scro
       draw(lines, mark[i] ?? "", {
         left: 0,
         top: top + i,
-        fg: left,
-        shadow: leftShadow,
+        fg: input.theme.mark,
+        shadow: input.theme.markShadow,
+        accent: input.theme.markAccent,
       })
     }
 
@@ -285,9 +297,9 @@ export function entrySplashLayout(input: { width: number; version: string; detai
     .map((_, index) => ellipsis + slash + segments.slice(index + 1).join(slash))
     .reverse()
     .filter((path) => stringWidth(path) < stringWidth(detail))
-  let layout = { label: Locale.takeWidth("oc mini", input.width), version: "", path: "", metadata: "" }
+  let layout = { label: Locale.takeWidth("hips mini", input.width), version: "", path: "", metadata: "" }
   const stages = [
-    { label: `${input.mono ? "[O]" : "▪"} oc mini` },
+    { label: `${input.mono ? "[H]" : "▪"} hips mini` },
     ...(leaf ? [{ path: leaf }] : []),
     ...(input.version ? [{ version: input.version }] : []),
     ...paths.concat(detail ? [detail] : []).map((path) => ({ path })),

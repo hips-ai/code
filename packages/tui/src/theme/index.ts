@@ -3,6 +3,7 @@ import { resolveThemeColors } from "./resolve"
 import { DEFAULT_THEMES, type Theme, type ThemeV1Json } from "./v1"
 import opencode from "./assets/v2/opencode.json" with { type: "json" }
 import opencode2 from "./assets/v2/opencode2.json" with { type: "json" }
+import hips from "./assets/v2/hips.json" with { type: "json" }
 
 export { DEFAULT_THEMES, type Theme, type ThemeV1Json } from "./v1"
 
@@ -24,6 +25,16 @@ export function getOpenCodeTheme() {
   return document
 }
 
+let hipsTheme: (ThemeDocument & {
+  readonly light: ModeDefinition
+  readonly dark: ModeDefinition
+}) | undefined
+
+export function getHipsTheme() {
+  hipsTheme ??= parseThemeDocument(hips, "hips") as NonNullable<typeof hipsTheme>
+  return hipsTheme
+}
+
 let opencode2Theme: ThemeDocument | undefined
 
 // Temporary theme for the "new-designs" experiment. It is not part of allThemes(), so only the
@@ -38,11 +49,12 @@ function listThemes(): Record<string, ThemeDocumentSource> {
   const themes: Record<string, ThemeDocumentSource> = {
     ...DEFAULT_THEMES,
     opencode: getOpenCodeTheme(),
+    hips: getHipsTheme(),
     ...customThemes,
   }
   return {
     ...themes,
-    system: systemTheme ?? themes.system ?? themes.opencode,
+    system: systemTheme ?? themes.system ?? themes.hips,
   }
 }
 

@@ -41,6 +41,7 @@ export { ThemeProvider, useTheme, type ColorScheme } from "./context"
 
 export {
   DEFAULT_THEMES,
+  hipsTheme,
   oc2Theme,
   amoledTheme,
   auraTheme,

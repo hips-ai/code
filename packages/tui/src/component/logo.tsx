@@ -1,9 +1,9 @@
 import { RGBA, TextAttributes } from "@opentui/core"
-import { For, type JSX } from "solid-js"
+import { For, Show, type JSX } from "solid-js"
 import { useTerminalDimensions } from "@opentui/solid"
 import { useTheme } from "../context/theme"
 import { tint } from "../theme/color"
-import { go, logo } from "../logo"
+import { logo, mascot } from "../logo"
 
 export function Logo() {
   const theme = useTheme()
@@ -34,10 +34,10 @@ export function Logo() {
           </text>
         )
       }
-      if (char === ",") {
+      if (char === "*") {
         return (
-          <text fg={shadow} attributes={attrs} selectable={false}>
-            ▄
+          <text fg={theme.brand.markAccent} attributes={attrs} selectable={false}>
+            ▀
           </text>
         )
       }
@@ -49,16 +49,53 @@ export function Logo() {
     })
   }
 
+  // Each cell carries two mascot pixels: the top one as a foreground half block, the bottom one as its background.
+  const renderMascot = (row: number): JSX.Element[] => {
+    const pixels: Record<string, RGBA | undefined> = {
+      m: theme.brand.mark,
+      s: theme.brand.markShade,
+      e: theme.brand.markEyes,
+      a: theme.brand.markAccent,
+    }
+    const bottom = Array.from(mascot[row * 2 + 1] ?? "")
+    return Array.from(mascot[row * 2] ?? "").map((pixel, column) => {
+      const upper = pixels[pixel]
+      const lower = pixels[bottom[column] ?? "."]
+      if (upper && pixel === bottom[column]) {
+        return (
+          <text fg={upper} selectable={false}>
+            █
+          </text>
+        )
+      }
+      if (upper) {
+        return (
+          <text fg={upper} bg={lower} selectable={false}>
+            ▀
+          </text>
+        )
+      }
+      if (lower) {
+        return (
+          <text fg={lower} selectable={false}>
+            ▄
+          </text>
+        )
+      }
+      return <text selectable={false}> </text>
+    })
+  }
+
   return (
     <box>
-      {dimensions().height < 12 ? null : dimensions().width < 22 ? (
-        <For each={go.right.slice(1)}>
-          {(line) => <box flexDirection="row">{renderLine(line, theme.text.base, true)}</box>}
+      {dimensions().height < 12 || dimensions().width < 16 ? null : dimensions().width < 22 ? (
+        <For each={logo.left}>
+          {(line) => <box flexDirection="row">{renderLine(line, theme.brand.mark, false)}</box>}
         </For>
-      ) : dimensions().width < 44 ? (
+      ) : dimensions().width < 40 ? (
         <>
-          <For each={logo.left.slice(1)}>
-            {(line) => <box flexDirection="row">{renderLine(line, theme.text.muted, false)}</box>}
+          <For each={logo.left}>
+            {(line) => <box flexDirection="row">{renderLine(line, theme.brand.mark, false)}</box>}
           </For>
           <For each={logo.right}>
             {(line) => <box flexDirection="row">{renderLine(line, theme.text.base, true)}</box>}
@@ -68,7 +105,12 @@ export function Logo() {
         <For each={logo.left}>
           {(line, index) => (
             <box flexDirection="row" gap={1}>
-              <box flexDirection="row">{renderLine(line, theme.text.muted, false)}</box>
+              <Show when={dimensions().width >= 56}>
+                <box flexDirection="row" marginRight={1}>
+                  {renderMascot(index())}
+                </box>
+              </Show>
+              <box flexDirection="row">{renderLine(line, theme.brand.mark, false)}</box>
               <box flexDirection="row">{renderLine(logo.right[index()], theme.text.base, true)}</box>
             </box>
           )}

@@ -1,7 +1,7 @@
 import { RGBA, SyntaxStyle, type CliRenderer, type ColorInput, type TerminalColors } from "@opentui/core"
 import { generateSyntax, resolveThemeDocument, themeModes, type ResolvedTheme } from "@opencode/theme/tui"
-import { allThemes, getOpenCodeTheme, isThemeSource, parseTheme, type ThemeDocumentSource } from "../theme"
-import { ansiToRgba } from "../theme/color"
+import { allThemes, getHipsTheme, isThemeSource, parseTheme, type ThemeDocumentSource } from "../theme"
+import { ansiToRgba, tint } from "../theme/color"
 import { discoverThemes } from "../theme/discovery"
 import { generateSystem, terminalMode } from "../theme/system"
 import { configDirectories } from "../util/config-directories"
@@ -18,7 +18,9 @@ export type RunEntryTheme = Record<EntryKind, Tone>
 export type RunSplashTheme = {
   left: ColorInput
   right: ColorInput
-  leftShadow: ColorInput
+  mark: ColorInput
+  markAccent: ColorInput
+  markShadow: ColorInput
 }
 
 export type RunFooterTheme = {
@@ -174,7 +176,9 @@ function map(
     splash: {
       left: nearestIndexed(indexed, theme.text.muted),
       right: nearestIndexed(indexed, theme.text.base),
-      leftShadow: nearestIndexed(indexed, theme.background.raised.base),
+      mark: nearestIndexed(indexed, theme.brand.mark),
+      markAccent: nearestIndexed(indexed, theme.brand.markAccent),
+      markShadow: nearestIndexed(indexed, tint(theme.background.base, theme.brand.mark, 0.25)),
     },
     block: {
       text: scrollback(theme.text.base),
@@ -196,11 +200,11 @@ function map(
 }
 
 export const RUN_THEME_FALLBACK = map(
-  resolveThemeDocument(parseTheme(getOpenCodeTheme()), "dark"),
+  resolveThemeDocument(parseTheme(getHipsTheme()), "dark"),
   ansiPalette,
 )
 export const RUN_THEME_FALLBACK_LIGHT = map(
-  resolveThemeDocument(parseTheme(getOpenCodeTheme()), "light"),
+  resolveThemeDocument(parseTheme(getHipsTheme()), "light"),
   ansiPalette,
 )
 
@@ -241,7 +245,7 @@ function monoTheme(mode: "dark" | "light"): RunTheme {
       tool: { body: foreground },
       error: { body: foreground },
     },
-    splash: { left: foreground, right: foreground, leftShadow: background },
+    splash: { left: foreground, right: foreground, mark: foreground, markAccent: foreground, markShadow: background },
     block: {
       text: foreground,
       muted: foreground,
@@ -286,7 +290,7 @@ export async function resolveRunTheme(
     renderer.themeMode ??
     (colors && terminalMode(colors)) ??
     (config?.mode === "light" ? "light" : "dark")
-  const name = config?.name ?? "opencode"
+  const name = config?.name ?? "hips"
   if (name === "system" && !colors) {
     return mode === "light" ? RUN_THEME_FALLBACK_LIGHT : RUN_THEME_FALLBACK
   }
@@ -298,7 +302,7 @@ export async function resolveRunTheme(
       if (themeModes(document).includes(mode)) return resolveThemeDocument(document, mode)
     })
     .catch(() => undefined)
-  const theme = resolved ?? resolveThemeDocument(parseTheme(getOpenCodeTheme()), mode)
+  const theme = resolved ?? resolveThemeDocument(parseTheme(getHipsTheme()), mode)
   const indexed = colors
     ? ansiPalette.map((color, index) => (colors.palette[index] ? RGBA.fromIndex(index, colors.palette[index]!) : color))
     : ansiPalette
@@ -323,6 +327,6 @@ async function themeSource(
   const custom = await discoverThemes(
     configDirectories(process.env.OPENCODE_CONFIG_DIR ?? Global.Path.config, process.cwd()),
   )
-  const source = custom[name] ?? allThemes()[name] ?? getOpenCodeTheme()
-  return isThemeSource(source) ? source : getOpenCodeTheme()
+  const source = custom[name] ?? allThemes()[name] ?? getHipsTheme()
+  return isThemeSource(source) ? source : getHipsTheme()
 }

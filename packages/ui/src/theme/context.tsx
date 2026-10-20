@@ -4,7 +4,7 @@ import { createEffect, onMount } from "solid-js"
 import { createStore } from "solid-js/store"
 import { makeEventListener } from "@solid-primitives/event-listener"
 import { createSimpleContext } from "../context/helper"
-import oc2ThemeJson from "./themes/oc-2.json"
+import hipsThemeJson from "./themes/hips.json"
 import { resolveThemeVariant, themeToCss } from "./resolve"
 import { resolveThemeVariantV2, themeV2ToCss } from "./v2/resolve"
 import type { DesktopTheme } from "./types"
@@ -50,6 +50,7 @@ function knownThemes() {
 }
 
 const names: Record<string, string> = {
+  hips: "HIPS",
   "oc-2": "OpenCode",
   amoled: "AMOLED",
   aura: "Aura",
@@ -88,12 +89,12 @@ const names: Record<string, string> = {
   zenburn: "Zenburn",
 }
 
-const oc2Theme = oc2ThemeJson as DesktopTheme
+const hipsTheme = hipsThemeJson as DesktopTheme
 
 function resolveStoredTheme(id: string | null | undefined, registered?: Record<string, DesktopTheme>) {
-  if (id === "oc-2" || (id && (knownThemes().has(id) || registered?.[id]))) return id
+  if (id === "hips" || (id && (knownThemes().has(id) || registered?.[id]))) return id
 
-  return "oc-2"
+  return "hips"
 }
 
 function read(key: string) {
@@ -206,7 +207,7 @@ export const { use: useTheme, provider: ThemeProvider } = createSimpleContext({
 
     const [store, setStore] = createStore({
       themes: {
-        "oc-2": oc2Theme,
+        hips: hipsTheme,
       } as Record<string, DesktopTheme>,
       themeId,
       colorScheme,
@@ -342,7 +343,7 @@ export const { use: useTheme, provider: ThemeProvider } = createSimpleContext({
         return
       }
 
-      if (next !== "oc-2" && !knownThemes().has(next) && !store.themes[next]) {
+      if (next !== "hips" && !knownThemes().has(next) && !store.themes[next]) {
         console.warn(`Theme "${id}" not found`)
 
         return
@@ -386,7 +387,7 @@ export const { use: useTheme, provider: ThemeProvider } = createSimpleContext({
 
         if (!next) return
 
-        if (next !== "oc-2" && !knownThemes().has(next) && !store.themes[next]) return
+        if (next !== "hips" && !knownThemes().has(next) && !store.themes[next]) return
         setStore("previewThemeId", next)
         void load(next).then((theme) => {
           if (!theme || store.previewThemeId !== next) return

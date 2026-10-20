@@ -1,4 +1,5 @@
 import type { DesktopTheme } from "./types"
+import hipsThemeJson from "./themes/hips.json"
 import oc2ThemeJson from "./themes/oc-2.json"
 import amoledThemeJson from "./themes/amoled.json"
 import auraThemeJson from "./themes/aura.json"
@@ -35,6 +36,8 @@ import tokyonightThemeJson from "./themes/tokyonight.json"
 import vercelThemeJson from "./themes/vercel.json"
 import vesperThemeJson from "./themes/vesper.json"
 import zenburnThemeJson from "./themes/zenburn.json"
+
+export const hipsTheme = hipsThemeJson as DesktopTheme
 
 export const oc2Theme = oc2ThemeJson as DesktopTheme
 
@@ -109,6 +112,7 @@ export const vesperTheme = vesperThemeJson as DesktopTheme
 export const zenburnTheme = zenburnThemeJson as DesktopTheme
 
 export const DEFAULT_THEMES: Record<string, DesktopTheme> = {
+  hips: hipsTheme,
   "oc-2": oc2Theme,
   amoled: amoledTheme,
   aura: auraTheme,

@@ -4,6 +4,7 @@ import { expandTheme, mergeTheme } from "./expand.js"
 import {
   ActionState,
   ActionVariant,
+  type BrandToken,
   HueStep,
   SurfaceName,
   ThemeDefinition,
@@ -24,6 +25,12 @@ import type {
 import { selectThemeMode, themeModes } from "./select.js"
 
 type ResolvedHue = ResolvedThemeTokens["hue"] & Readonly<Record<string, HueScale>>
+
+// Product mark colors per mode. A theme replaces any of them through its `brand` tokens.
+const brandDefaults = {
+  dark: { mark: "#0089DD", markShade: "#005F9E", markAccent: "#81BD41", markEyes: "#EDF3F5" },
+  light: { mark: "#007DBB", markShade: "#00547E", markAccent: "#5E9A2A", markEyes: "#EDF3F5" },
+} satisfies Record<Mode, Record<BrandToken, string>>
 
 const decodeThemeDefinitionSchema = Schema.decodeUnknownSync(ThemeDefinition, { reportInput: true })
 const decodeThemeDocumentSchema = Schema.decodeUnknownSync(ThemeDocument, { reportInput: true })
@@ -55,14 +62,14 @@ export function parseThemeDocument(input: unknown, name = "theme") {
 export function resolveThemeDocument(document: ThemeDocument, mode?: Mode) {
   const selected = selectThemeMode(document, mode)
   const definition = expandTheme(selected.theme)
-  return resolveExpandedTheme(definition)
+  return resolveExpandedTheme(definition, selected.mode)
 }
 
 export function resolveTheme(definition: ThemeDefinition): ResolvedTheme {
   return resolveExpandedTheme(expandTheme(decodeThemeDefinition(definition)))
 }
 
-function resolveExpandedTheme(definition: ThemeDefinition): ResolvedTheme {
+function resolveExpandedTheme(definition: ThemeDefinition, mode?: Mode): ResolvedTheme {
   const hue = resolveHue(definition.hue)
   const categorical = definition.categorical.map((name) => {
     const scale = hue[name]
@@ -70,7 +77,7 @@ function resolveExpandedTheme(definition: ThemeDefinition): ResolvedTheme {
     return scale
   })
   const hueSteps = compileHueSteps(hue)
-  const base = tokens(definition)
+  const base = tokens(definition, mode ?? inferMode(definition, hue))
   const views = {} as Record<SurfaceName, ResolvedTheme>
   const view = (tokens: ThemeTokensDefinition): ResolvedTheme => ({
     ...resolveView(tokens, hue, categorical, hueSteps),
@@ -80,7 +87,7 @@ function resolveExpandedTheme(definition: ThemeDefinition): ResolvedTheme {
   return view(base)
 }
 
-function tokens(definition: ThemeDefinition): ThemeTokensDefinition {
+function tokens(definition: ThemeDefinition, mode: Mode): ThemeTokensDefinition {
   return {
     text: definition.text,
     background: definition.background,
@@ -89,7 +96,18 @@ function tokens(definition: ThemeDefinition): ThemeTokensDefinition {
     diff: definition.diff,
     syntax: definition.syntax,
     markdown: definition.markdown,
+    brand: { ...brandDefaults[mode], ...definition.brand },
   }
+}
+
+// A bare definition carries no mode, so read it from whether the text is lighter than the background.
+function inferMode(definition: ThemeDefinition, hue: ResolvedHue): Mode {
+  const resolve = createResolver({ ...definition, hue })
+  const luminance = (color: unknown) =>
+    color instanceof RGBA ? 0.299 * color.r + 0.587 * color.g + 0.114 * color.b : 0
+  return luminance(resolve("$text.base", "text.base")) > luminance(resolve("$background.base", "background.base"))
+    ? "dark"
+    : "light"
 }
 
 function contextualize(base: ThemeTokensDefinition, override: ThemeTokensDefinition) {
