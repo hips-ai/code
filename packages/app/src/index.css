@@ -44,6 +44,21 @@
     visibility: hidden;
   }
 
+  /* The HIPS dark theme draws the session surface as a blueprint drafting sheet. The grid sits on the
+     frame, not the scroll view, so it stays put while the timeline scrolls. */
+  html[data-theme="hips"][data-color-scheme="dark"] [data-slot="session-panel-frame"] {
+    background-image:
+      linear-gradient(to right, rgb(11 68 121 / 0.4) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(11 68 121 / 0.4) 1px, transparent 1px),
+      linear-gradient(to right, rgb(6 54 105 / 0.4) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(6 54 105 / 0.4) 1px, transparent 1px);
+    background-size:
+      112px 112px,
+      112px 112px,
+      28px 28px,
+      28px 28px;
+  }
+
   [data-slot="session-side-panel-presence"][data-opened="true"] {
     animation: side-region-presence-in 240ms cubic-bezier(0.22, 1, 0.36, 1);
   }
