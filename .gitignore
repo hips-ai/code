@@ -7,6 +7,10 @@ node_modules
 .idea
 .vscode
 .codex
+.claude
+CLAUDE.md
+CLAUDE.local.md
+.mcp.json
 *~
 playground
 tmp
