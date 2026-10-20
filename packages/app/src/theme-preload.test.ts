@@ -21,10 +21,10 @@ beforeEach(() => {
 
 describe("theme preload", () => {
   test.each([
-    { stored: undefined, systemDark: false, scheme: "light", background: "#fafafa" },
-    { stored: "dark", systemDark: false, scheme: "dark", background: "#080808" },
-    { stored: "light", systemDark: true, scheme: "light", background: "#fafafa" },
-    { stored: "system", systemDark: true, scheme: "dark", background: "#080808" },
+    { stored: undefined, systemDark: false, scheme: "light", background: "#edf3f5" },
+    { stored: "dark", systemDark: false, scheme: "dark", background: "#00142f" },
+    { stored: "light", systemDark: true, scheme: "light", background: "#edf3f5" },
+    { stored: "system", systemDark: true, scheme: "dark", background: "#00142f" },
   ])(
     "paints the default theme in $scheme for stored scheme $stored (system dark: $systemDark)",
     ({ stored, systemDark, scheme, background }) => {
@@ -36,8 +36,31 @@ describe("theme preload", () => {
       expect(document.documentElement.dataset.theme).toBe("hips")
       expect(document.documentElement.dataset.colorScheme).toBe(scheme)
       expect(document.documentElement.style.backgroundColor).toBe(background)
+      expect(document.getElementById("oc-theme-preload")?.textContent).toContain(
+        `--v2-background-bg-deep: ${background};`,
+      )
     },
   )
+
+  test("takes the background from a cached theme's css", () => {
+    localStorage.setItem("opencode-theme-id", "nightowl")
+    localStorage.setItem("opencode-color-scheme", "dark")
+    localStorage.setItem("opencode-theme-css-dark", "--v2-background-bg-deep: #010203;")
+    document.head.innerHTML = '<meta name="theme-color" content="#fafafa">'
+    run()
+
+    expect(document.documentElement.style.backgroundColor).toBe("#010203")
+    expect(document.querySelector("meta[name='theme-color']")?.getAttribute("content")).toBe("#010203")
+  })
+
+  test("keeps the static oc-2 background, which is never cached", () => {
+    localStorage.setItem("opencode-theme-id", "oc-2")
+    localStorage.setItem("opencode-color-scheme", "dark")
+    run()
+
+    expect(document.documentElement.style.backgroundColor).toBe("#080808")
+    expect(document.getElementById("oc-theme-preload")).toBeNull()
+  })
 
   test.each([
     { scheme: undefined, key: "opencode-theme-css-light", css: "--background-base:#fff;", expected: "light" },
