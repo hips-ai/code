@@ -2,24 +2,24 @@
 import * as mod from "./logo"
 
 const docs = `### Overview
-OpenCode logo assets: mark, splash, and wordmark.
+HIPS Code logo assets: the HiP mascot mark, splash, the full lockup, and the company logo.
 
-Use Mark for compact spaces, Logo for headers, Splash for hero sections.
+Use Mark for compact spaces, Logo for headers, Splash for hero sections, HipsLogo for company credits.
 
 ### API
-- \`Mark\`, \`Splash\`, and \`Logo\` components accept standard SVG props.
+- \`Mark\`, \`Logo\`, and \`HipsLogo\` accept \`class\`; \`Splash\` also accepts \`ref\`.
 
 ### Variants and states
-- Multiple logo variants for different contexts.
+- Mark and Splash show the mascot in a 4:5 box; Logo lays out the mascot, the hips logo and "Code" on a 720 by 129 canvas.
 
 ### Behavior
-- Pure SVG rendering.
+- Pure SVG rendering. The mascot keeps its brand colors in every theme.
 
 ### Accessibility
 - Provide title/aria-label when logos convey meaning.
 
 ### Theming/tokens
-- Uses theme color tokens via CSS variables.
+- "Code" uses \`currentColor\`. The hips letters switch to the brighter brand blue on dark surfaces through \`--logo-hips-letters\`.
 
 `
 
@@ -46,11 +46,15 @@ export const Basic = {
       </div>
       <div>
         <div style={{ color: "var(--text-weak)", "font-size": "12px" }}>Splash</div>
-        <mod.Splash style={{ width: "80px", height: "100px" }} />
+        <mod.Splash class="block w-20 h-25" />
       </div>
       <div>
         <div style={{ color: "var(--text-weak)", "font-size": "12px" }}>Logo</div>
-        <mod.Logo style={{ width: "200px" }} />
+        <mod.Logo class="block w-50" />
+      </div>
+      <div>
+        <div style={{ color: "var(--text-weak)", "font-size": "12px" }}>HipsLogo</div>
+        <mod.HipsLogo class="block w-20" />
       </div>
     </div>
   ),

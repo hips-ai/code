@@ -1,4 +1,5 @@
 import { NodeServices } from "@effect/platform-node"
+import { Global } from "@opencode/util/global"
 import { Effect } from "effect"
 import { Command } from "effect/cli"
 import { Commands } from "../../src/commands/commands"
@@ -14,26 +15,32 @@ await Effect.runPromise(
     Effect.provideService(Updater.Service, {
       run: () => Effect.die("Manual upgrades must not check for automatic updates"),
       check: () => Effect.die("Manual upgrades must not check for TUI updates"),
-      apply: () => Effect.die("Manual upgrades must not apply TUI updates"),
       removal: () => undefined,
-      method: () =>
+      method: () => Effect.die("Manual upgrades must not detect a package manager"),
+      checkout: () =>
         Effect.sync(() => {
-          record("method")
-          return Updater.methods.find((method) => method === (process.env.UPGRADE_TEST_METHOD ?? "npm"))
+          record("checkout")
+          return process.env.UPGRADE_TEST_PULL === "compiled" ? undefined : "/checkout"
         }),
-      latest: (method) =>
+      upgrade: (root) =>
         Effect.suspend(() => {
-          record({ latest: method })
-          return process.env.UPGRADE_TEST_LATEST_ERROR
-            ? Effect.fail(new Error("Update check failed"))
-            : Effect.succeed("0.0.0-beta-new")
-        }),
-      upgrade: (method, version) =>
-        Effect.suspend(() => {
-          record({ method, version })
-          return process.env.UPGRADE_TEST_INSTALL_ERROR ? Effect.fail(new Error("Permission denied")) : Effect.void
+          record({ upgrade: root })
+          if (process.env.UPGRADE_TEST_PULL === "diverged")
+            return Effect.fail(
+              new Updater.UpgradeError({
+                title: "Could not pull HIPS Code updates",
+                detail: "fatal: Not possible to fast-forward, aborting.",
+                command: "git -C /checkout pull --ff-only",
+                retry: "Fix the issue above, then run opencode upgrade again.",
+              }),
+            )
+          return Effect.succeed({
+            from: "abc1234",
+            to: process.env.UPGRADE_TEST_PULL === "current" ? "abc1234" : "def5678",
+          })
         }),
     }),
+    Effect.provide(Global.layerWith({})),
     Effect.provide(NodeServices.layer),
   ),
 )

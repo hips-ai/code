@@ -4,10 +4,10 @@
   "version": "2.1.1",
   "type": "module",
   "license": "MIT",
-  "homepage": "https://opencode.ai",
+  "homepage": "https://hips.com",
   "author": {
-    "name": "OpenCode",
-    "email": "hello@opencode.ai"
+    "name": "Hyperscale Inference Processing Systems OÜ",
+    "email": "hello@hips.com"
   },
   "scripts": {
     "typecheck": "tsc -b",

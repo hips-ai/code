@@ -2,3 +2,8 @@
   width: 16px;
   aspect-ratio: 4/5;
 }
+
+/* #007DBB falls under 4.5:1 on the dark surfaces, so the letters take the brighter brand blue there. */
+[data-color-scheme="dark"] [data-slot="logo-hips"] {
+  --logo-hips-letters: #0089dd;
+}

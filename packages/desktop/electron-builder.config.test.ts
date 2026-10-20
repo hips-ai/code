@@ -13,9 +13,9 @@ import { CLI_BINARIES, nodePtyPackage } from "./scripts/utils"
 const { FileMatcher } = createRequire(import.meta.resolve("electron-builder"))("app-builder-lib/out/fileMatcher")
 
 const channels = [
-  { channel: "dev", appId: "ai.opencode.desktop.dev" },
-  { channel: "beta", appId: "ai.opencode.desktop.beta" },
-  { channel: "prod", appId: "ai.opencode.desktop" },
+  { channel: "dev", appId: "ai.opencode.desktop.dev", packageName: "opencode-dev", executableName: "OpenCode Dev" },
+  { channel: "beta", appId: "ai.opencode.desktop.beta", packageName: "opencode-beta", executableName: "OpenCode Beta" },
+  { channel: "prod", appId: "ai.opencode.desktop", packageName: "opencode", executableName: "OpenCode" },
 ] as const
 
 function load(channel: string, target?: string): Configuration {
@@ -47,9 +47,12 @@ function trimFilter(dir: string, config: Configuration) {
   ]).createFilter()
 }
 
-test.each(channels)("channel identity for $channel", ({ channel, appId }) => {
+test.each(channels)("channel identity for $channel", ({ channel, appId, packageName, executableName }) => {
   const config = load(channel)
   expect(config.appId).toBe(appId)
+  expect(config.deb?.packageName).toBe(packageName)
+  expect(config.rpm?.packageName).toBe(packageName)
+  expect(config.win?.executableName).toBe(executableName)
   expect(config.extraMetadata?.desktopName).toBe(`${appId}.desktop`)
   expect(config.linux?.executableName).toBe(appId)
   expect(config.linux?.desktop?.entry?.StartupWMClass).toBe(appId)
@@ -64,7 +67,7 @@ test.each(channels)("channel identity for $channel", ({ channel, appId }) => {
 
 test("legacy Linux launcher stays hidden", async () => {
   const desktop = await Bun.file(path.join(import.meta.dirname, "resources/linux/opencode-desktop.desktop")).text()
-  expect(desktop).toContain("Exec=/opt/OpenCode/ai.opencode.desktop %U")
+  expect(desktop).toContain(`Exec="/opt/${load("prod").productName}/ai.opencode.desktop" %U`)
   expect(desktop).toContain("Icon=ai.opencode.desktop")
   expect(desktop).toContain("StartupWMClass=ai.opencode.desktop")
   expect(desktop).toContain("NoDisplay=true")

@@ -69,7 +69,15 @@ const APP_IDS = {
   prod: "ai.opencode.desktop",
 } as const
 
-const getBase = (appId: string): Configuration => {
+// Windows keeps these executable names so taskbar pins and the installer's running-app check still
+// find the app after an update, whatever productName shows.
+const WINDOWS_EXECUTABLE_NAMES = {
+  dev: "OpenCode Dev",
+  beta: "OpenCode Beta",
+  prod: "OpenCode",
+} as const
+
+const getBase = (appId: string, executableName: string): Configuration => {
   const target = getCurrentCli()
 
   return {
@@ -181,6 +189,7 @@ const getBase = (appId: string): Configuration => {
       schemes: ["opencode"],
     },
     win: {
+      executableName,
       icon: `resources/icons/icon.ico`,
       signtoolOptions: {
         sign: signWindows,
@@ -214,15 +223,15 @@ const getBase = (appId: string): Configuration => {
 export function getConfig() {
   const channel = resolveChannel()
   const appId = APP_IDS[channel]
-  const base = getBase(appId)
+  const base = getBase(appId, WINDOWS_EXECUTABLE_NAMES[channel])
 
   switch (channel) {
     case "dev": {
       return {
         ...base,
         appId,
-        productName: "OpenCode Dev",
-        deb: { fpm: [metainfoFpm(appId)] },
+        productName: "HIPS Code Dev",
+        deb: { packageName: "opencode-dev", fpm: [metainfoFpm(appId)] },
         rpm: { packageName: "opencode-dev", fpm: [metainfoFpm(appId)] },
       }
     }
@@ -231,14 +240,14 @@ export function getConfig() {
       return {
         ...base,
         appId,
-        productName: "OpenCode Beta",
+        productName: "HIPS Code Beta",
         protocols: { name: "OpenCode Beta", schemes: ["opencode"] },
         publish: {
           provider: "generic",
           url: "https://opencode.ai/update/api/beta/desktop/opencode/",
           channel: "latest",
         },
-        deb: { fpm: [metainfoFpm(appId)] },
+        deb: { packageName: "opencode-beta", fpm: [metainfoFpm(appId)] },
         rpm: { packageName: "opencode-beta", fpm: [metainfoFpm(appId)] },
       }
     }
@@ -247,14 +256,14 @@ export function getConfig() {
       return {
         ...base,
         appId,
-        productName: "OpenCode",
+        productName: "HIPS Code",
         protocols: { name: "OpenCode", schemes: ["opencode"] },
         publish: {
           provider: "generic",
           url: "https://opencode.ai/update/api/latest/desktop/opencode/",
           channel: "latest",
         },
-        deb: { fpm: [metainfoFpm(appId), legacyDesktopEntryFpm] },
+        deb: { packageName: "opencode", fpm: [metainfoFpm(appId), legacyDesktopEntryFpm] },
         rpm: { packageName: "opencode", fpm: [metainfoFpm(appId), legacyDesktopEntryFpm] },
       }
     }

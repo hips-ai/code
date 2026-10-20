@@ -47,7 +47,7 @@ export default Runtime.handler(Commands, (input) =>
       },
     }).pipe(
       Effect.tapError(() =>
-        Effect.promise(() => preflight.fail("OpenCode update could not start the new background service")),
+        Effect.promise(() => preflight.fail("HIPS Code update could not start the new background service")),
       ),
     )
     const session = Option.getOrUndefined(input.session)
@@ -60,19 +60,13 @@ export default Runtime.handler(Commands, (input) =>
         catch: (cause) => new Error(errorMessage(cause)),
       })) !== undefined
     const updater = yield* Updater.Service
-    let installing: string | undefined
     let latest: Updater.RunResult | undefined
-    const installListeners = new Set<(version: string) => void>()
     const resultListeners = new Set<(result: Updater.RunResult) => void>()
     // Background checks, `/update` lookups, and manual installs take turns so two installs never overlap.
     const checking = yield* Semaphore.make(1)
     yield* updater
-      .run((version) => {
-        installing = version
-        installListeners.forEach((notify) => notify(version))
-      })
+      .run()
       .pipe(
-        Effect.ensuring(Effect.sync(() => (installing = undefined))),
         Effect.tap((result) =>
           Effect.sync(() => {
             if (!result || (result.type === latest?.type && result.version === latest.version)) return
@@ -128,14 +122,19 @@ export default Runtime.handler(Commands, (input) =>
           resultListeners.add(notify)
           return () => resultListeners.delete(notify)
         },
-        check: (signal, notify) => {
-          if (installing) notify(installing)
-          installListeners.add(notify)
-          return runPromise(checking.withPermits(1)(updater.check()), { signal }).finally(() =>
-            installListeners.delete(notify),
-          )
-        },
-        apply: (version) => runPromise(checking.withPermits(1)(updater.apply(version))),
+        check: (signal) => runPromise(checking.withPermits(1)(updater.check()), { signal }),
+        apply: () =>
+          runPromise(
+            checking.withPermits(1)(
+              Effect.gen(function* () {
+                const root = yield* updater.checkout()
+                if (!root) return yield* Effect.fail(new Error(Updater.unavailable))
+                yield* updater.upgrade(root)
+                // The pulled server code only runs once the background service restarts.
+                if (service) yield* service.restart()
+              }),
+            ),
+          ),
       },
       packages: {
         prepare: (spec, install = true) => runPromise(install ? npm.add(spec) : npm.resolve(spec)),

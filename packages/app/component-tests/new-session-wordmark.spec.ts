@@ -9,17 +9,23 @@ for (const theme of ["light", "dark"]) {
       const reveal = logo.locator('[data-slot="wordmark-reveal"]')
       const shimmer = logo.locator(".wordmark-shimmer")
       const base = logo.locator("svg").first()
-      await expect(base).toHaveCSS("opacity", "0.16")
+      await expect(base).toHaveCSS("opacity", "1")
       await expect(shimmer).toHaveCSS("animation-iteration-count", "1")
       await expect(logo.locator("g[mask]")).toHaveCount(0)
       await expect(shimmer).toHaveCSS("color", "rgb(255, 255, 255)")
       await expect(shimmer).toHaveCSS("mix-blend-mode", "screen")
-      await expect(base.locator("path").nth(1)).toHaveAttribute("fill", "var(--icon-base)")
-      await expect(base.locator("path").nth(9)).toHaveCSS(
+      // The mascot keeps its brand blue in both themes; the hips letters brighten on dark surfaces.
+      await expect(base.locator('[data-slot="logo-mascot"] path').nth(2)).toHaveCSS("fill", "rgb(0, 125, 187)")
+      await expect(base.locator('[data-slot="logo-hips"] path').first()).toHaveCSS(
         "fill",
-        await base.locator("path").nth(1).evaluate((element) => getComputedStyle(element).fill),
+        theme === "dark" ? "rgb(0, 137, 221)" : "rgb(0, 125, 187)",
       )
-      await expect(base.locator('path[fill="var(--icon-weak-base)"]')).toHaveCount(8)
+      await expect(base.locator('[data-slot="logo-code"] path')).toHaveCSS(
+        "fill",
+        await logo.evaluate((element) => getComputedStyle(element).color),
+      )
+      await expect(shimmer.locator("path")).toHaveCount(7)
+      for (const path of await shimmer.locator("path").all()) await expect(path).toHaveCSS("fill", "rgb(255, 255, 255)")
 
       await logo.evaluate((element) => {
         element.getAnimations({ subtree: true }).forEach((animation) => {
@@ -35,7 +41,7 @@ for (const theme of ["light", "dark"]) {
         element.getAnimations({ subtree: true }).forEach((animation) => (animation.currentTime = 400))
       })
       await expect(shimmer).toHaveCSS("mask-position", "50% 0px")
-      await expect(shimmer).toHaveCSS("opacity", theme === "dark" ? "0.0672" : "0.45")
+      await expect(shimmer).toHaveCSS("opacity", theme === "dark" ? "0.3" : "0.45")
       const swept = await logo.screenshot({ path: testInfo.outputPath("wordmark-shimmer.png") })
 
       await logo.evaluate((element) => {
@@ -87,7 +93,7 @@ for (const theme of ["light", "dark"]) {
     await page.setViewportSize({ width: 360, height: 640 })
     const component = await mount("app-new-session-wordmark--reveal", { globals: { theme } })
     const logo = component.locator('[data-component="new-session-wordmark"]')
-    await expect(logo.locator("svg").first()).toHaveCSS("opacity", "0.16")
+    await expect(logo.locator("svg").first()).toHaveCSS("opacity", "1")
     await expect(logo.locator('[data-slot="wordmark-reveal"]')).toHaveCSS("opacity", "1")
     await expect(logo.locator(".wordmark-shimmer")).toHaveCSS("opacity", "0")
     expect(await logo.evaluate((element) => element.getAnimations({ subtree: true }).length)).toBe(0)

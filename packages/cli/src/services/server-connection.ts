@@ -62,6 +62,15 @@ function managedService(options: EnsureOptions) {
   }
 }
 
+// Replaces a running background service, keeping its persistent terminals, so it loads updated code.
+// Returns whether a service was running; none is started when it was not.
+export const restart = Effect.fn("cli.server-connection.restart")(function* () {
+  const options = yield* ServiceConfig.options()
+  if ((yield* Service.discover(options)) === undefined) return false
+  yield* managedService(options).restart()
+  return true
+})
+
 export const shutdownPersistentPty = Effect.fn("cli.server-connection.shutdown-persistent-pty")(function* (
   options: EnsureOptions,
 ) {

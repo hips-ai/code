@@ -12,4 +12,13 @@ describe("OauthCallbackPage", () => {
     expect(html).toContain(`xAI\\u003c/script>\\u003cscript>alert(\\\"provider\\\")\\u003c/script>`)
     expect(html).toContain(`/token\\u003c/script>\\u003cscript>alert(\\\"path\\\")\\u003c/script>`)
   })
+
+  test("names HIPS Code and renders its lockup", () => {
+    const html = OauthCallbackPage.success({ provider: "xAI" })
+
+    expect(html).toContain("<title>Authorization successful · HIPS Code</title>")
+    expect(html).toContain('aria-label="HIPS Code"')
+    expect(html).toContain("HIPS Code is now connected to xAI.")
+    expect(html).not.toContain("OpenCode")
+  })
 })
